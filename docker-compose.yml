@@ -1,0 +1,79 @@
+version: '3'
+
+networks:
+  grid:
+    driver: bridge
+
+services:
+  artifact-store-s3:
+    build: .
+    ports:
+    - 4000:4000
+    exposed:
+      - 4000
+    restart: always
+    networks:
+      grid:
+        aliases:
+        - artifact-store
+    command: >
+      npm start --
+        --port 4000
+        --access-key ${AWS_ACCESS_KEY_ID}
+        --secret-key ${AWS_SECRET_ACCESS_KEY}
+        --region ${AWS_DEFAULT_REGION}
+        --asset-bucket ${AWS_ASSET_BUCKET}
+        --metadata-bucket ${AWS_METADATA_BUCKET}
+    depends_on:
+      - zalenium
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.1.2
+    ports:
+      - 9200:9200
+      - 9300:9300
+    restart: always
+    environment:
+      - discovery.type=single-node
+    networks:
+      grid:
+        aliases:
+        - elasticsearch
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana-oss:6.1.2
+    ports:
+      - 5601:5601
+    restart: always
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      xpack.security.enabled: "false"
+    networks:
+      grid:
+        aliases:
+        - kibana
+    depends_on:
+      - elasticsearch
+
+  zalenium:
+    image: dosel/zalenium:3.14.0g
+    ports:
+    - 4444:4444
+    - 5555:5555
+    tty: true
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - REMOTE_DASHBOARD_HOST=http://artifact-store:4000
+    restart: always
+    command: >
+      start --screenWidth 1920
+            --screenHeight 1080
+            --timeZone "UTC"
+            --videoRecordingEnabled true
+    networks:
+      grid:
+        aliases:
+        - zalenium-node1
+    depends_on:
+      - kibana

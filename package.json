@@ -1,0 +1,32 @@
+{
+  "name": "artifact-store-s3",
+  "version": "1.0.0",
+  "description": "A simple REST webservice that stores artifacts created during test runs on AWS S3",
+  "keywords": [
+    "artifact",
+    "test",
+    "store",
+    "s3",
+    "aws"
+  ],
+  "eslintConfig": {
+    "extends": "mourner"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "eslint index.js",
+    "start": "node index.js"
+  },
+  "author": "Luís Mendes",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.353.0",
+    "eslint": "^5.9.0",
+    "eslint-config-mourner": "2.0.3",
+    "express": "4.16.2",
+    "multer": "1.3.0",
+    "multer-s3": "^2.9.0",
+    "request": "^2.88.0",
+    "yargs": "11.0.0"
+  }
+}

@@ -3,7 +3,7 @@
 
 This project allows [Zalenium](https://zalando.github.io/zalenium) to store test artifacts eg: screenshots, videos to a S3 bucket. Most of the code is based on [adrichem artifact-store](https://github.com/adrichem/artifact-store) that allows the same but for Azure Blob Storage.
 
- https://github.com/adrichem/artifact-store
+### How it works
 
 Post a multipart file upload to the / endpoint and the 'artifact-store' does the following:
 
